@@ -1,62 +1,65 @@
-* {
-  box-sizing: border-box;
+let sentences = [];
+let index = 0;
+let startTime;
+let speeds = [];
+
+const startBtn = document.getElementById("startBtn");
+const game = document.getElementById("game");
+const currentSentence = document.getElementById("currentSentence");
+const nextSentence = document.getElementById("nextSentence");
+const input = document.getElementById("typingInput");
+const progress = document.getElementById("progress");
+const result = document.getElementById("result");
+
+fetch("sentences.txt")
+  .then(res => res.text())
+  .then(text => {
+    sentences = text
+      .split("\n")
+      .map(s => s.trim())
+      .filter(Boolean)
+      .slice(0, 10);
+  });
+
+startBtn.onclick = () => {
+  startBtn.style.display = "none";
+  game.classList.remove("hidden");
+  index = 0;
+  speeds = [];
+  show();
+};
+
+function show() {
+  currentSentence.innerText = sentences[index];
+  nextSentence.innerText = sentences[index + 1] || "마지막 문장입니다";
+  input.value = "";
+  input.focus();
+  startTime = Date.now();
+  progress.innerText = `${index + 1} / ${sentences.length}`;
 }
 
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #0f172a;
-  color: white;
-}
+input.addEventListener("keydown", e => {
+  if (e.key !== "Enter") return;
 
-.container {
-  max-width: 600px;
-  margin: auto;
-  padding: 20px;
-  text-align: center;
-}
+  if (input.value !== sentences[index]) return;
 
-h1 {
-  margin-bottom: 20px;
-}
+  const time = (Date.now() - startTime) / 1000;
+  const speed = sentences[index].length / time;
+  speeds.push(speed);
 
-button {
-  width: 100%;
-  padding: 14px;
-  font-size: 18px;
-  border: none;
-  border-radius: 8px;
-  background: #38bdf8;
-  color: black;
-  font-weight: bold;
-}
+  index++;
 
-.sentence {
-  margin: 15px 0;
-  padding: 15px;
-  border-radius: 8px;
-}
+  if (index < sentences.length) {
+    show();
+  } else {
+    finish();
+  }
+});
 
-.now {
-  background: #1e293b;
-  font-size: 18px;
-}
+function finish() {
+  input.disabled = true;
+  const avg =
+    speeds.reduce((a, b) => a + b, 0) / speeds.length;
 
-.next {
-  background: #020617;
-  color: #94a3b8;
-  font-size: 14px;
-}
-
-input {
-  width: 100%;
-  padding: 14px;
-  font-size: 18px;
-  border-radius: 8px;
-  border: none;
-  margin-top: 10px;
-}
-
-.hidden {
-  display: none;
+  result.innerText = `평균 타자 속도: ${avg.toFixed(2)} 타/초`;
 }
