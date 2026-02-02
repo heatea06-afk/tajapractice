@@ -1,66 +1,65 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>애니 명대사 타자연습</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+let sentences = [];
+let index = 0;
+let startTime;
+let speeds = [];
 
-<div class="container">
-  <h1>애니 명대사 타자연습</h1>
+const startBtn = document.getElementById("startBtn");
+const game = document.getElementById("game");
+const currentSentence = document.getElementById("currentSentence");
+const nextSentence = document.getElementById("nextSentence");
+const input = document.getElementById("typingInput");
+const progress = document.getElementById("progress");
+const result = document.getElementById("result");
 
-  <button id="startBtn">타자연습 시작!</button>
+fetch("sentences.txt")
+  .then(res => res.text())
+  .then(text => {
+    sentences = text
+      .split("\n")
+      .map(s => s.trim())
+      .filter(Boolean)
+      .slice(0, 10);
+  });
 
-  <div id="game" class="hidden">
-    <div class="sentence now" id="currentSentence"></div>
-    <div class="sentence next" id="nextSentence"></div>
+startBtn.onclick = () => {
+  startBtn.style.display = "none";
+  game.classList.remove("hidden");
+  index = 0;
+  speeds = [];
+  show();
+};
 
-    <input
-      id="typingInput"
-      placeholder="여기에 입력하고 엔터"
-      autocomplete="off"
-    />
+function show() {
+  currentSentence.innerText = sentences[index];
+  nextSentence.innerText = sentences[index + 1] || "마지막 문장입니다";
+  input.value = "";
+  input.focus();
+  startTime = Date.now();
+  progress.innerText = `${index + 1} / ${sentences.length}`;
+}
 
-    <p id="progress"></p>
-    <p id="result"></p>
-  </div>
-</div>
+input.addEventListener("keydown", e => {
+  if (e.key !== "Enter") return;
 
-<script src="script.js"></script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>애니 명대사 타자연습</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+  if (input.value !== sentences[index]) return;
 
-<div class="container">
-  <h1>애니 명대사 타자연습</h1>
+  const time = (Date.now() - startTime) / 1000;
+  const speed = sentences[index].length / time;
+  speeds.push(speed);
 
-  <button id="startBtn">타자연습 시작!</button>
+  index++;
 
-  <div id="game" class="hidden">
-    <div class="sentence now" id="currentSentence"></div>
-    <div class="sentence next" id="nextSentence"></div>
+  if (index < sentences.length) {
+    show();
+  } else {
+    finish();
+  }
+});
 
-    <input
-      id="typingInput"
-      placeholder="여기에 입력하고 엔터"
-      autocomplete="off"
-    />
+function finish() {
+  input.disabled = true;
+  const avg =
+    speeds.reduce((a, b) => a + b, 0) / speeds.length;
 
-    <p id="progress"></p>
-    <p id="result"></p>
-  </div>
-</div>
-
-<script src="script.js"></script>
-</body>
-</html>
+  result.innerText = `평균 타자 속도: ${avg.toFixed(2)} 타/초`;
+}
