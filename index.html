@@ -1,22 +1,66 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>타자연습</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>애니 명대사 타자연습</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+<div class="container">
   <h1>애니 명대사 타자연습</h1>
-  <div id="game">
-    <p id="sentence">로딩 중...</p>
-    <input type="text" id="input" placeholder="타자를 시작하세요">
-    <button id="startBtn">시작</button>
-    <p id="scoreDisplay"></p>
+
+  <button id="startBtn">타자연습 시작!</button>
+
+  <div id="game" class="hidden">
+    <div class="sentence now" id="currentSentence"></div>
+    <div class="sentence next" id="nextSentence"></div>
+
+    <input
+      id="typingInput"
+      placeholder="여기에 입력하고 엔터"
+      autocomplete="off"
+    />
+
+    <p id="progress"></p>
+    <p id="result"></p>
   </div>
+</div>
 
-  <h2>랭킹</h2>
-  <ol id="rankingList"></ol>
+<script src="script.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>애니 명대사 타자연습</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
 
-  <script src="script.js"></script>
+<div class="container">
+  <h1>애니 명대사 타자연습</h1>
+
+  <button id="startBtn">타자연습 시작!</button>
+
+  <div id="game" class="hidden">
+    <div class="sentence now" id="currentSentence"></div>
+    <div class="sentence next" id="nextSentence"></div>
+
+    <input
+      id="typingInput"
+      placeholder="여기에 입력하고 엔터"
+      autocomplete="off"
+    />
+
+    <p id="progress"></p>
+    <p id="result"></p>
+  </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
